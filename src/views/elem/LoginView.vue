@@ -1,6 +1,8 @@
 <template>
   <el-container>
-    <el-header style="font-size: 40px; background-color: rgb(238, 241, 246);display: flex; justify-content: center; align-items: center;">Quiz后台管理系统登录</el-header>
+    <el-header style="font-size: 40px; background-color: rgb(238, 241, 246);display: flex; justify-content: center; align-items: center;">
+      餐厅后台管理系统登录
+    </el-header>
     <el-main>
       <el-form :model="form" :rules="rules" ref="loginForm" label-width="80px" class="login-form">
         <el-form-item label="用户名" prop="username">
@@ -48,7 +50,7 @@ export default {
     },
 
     login() {
-      axios.post('adminlogin', {
+      axios.post('/api/users/adminlogin', {
         username: this.form.username,
         password: this.form.password
       }, {
@@ -61,7 +63,7 @@ export default {
         if (res.data.code === 200) {
           const token = res.data.data;
           localStorage.setItem('jwt_token', token); // 保存 token
-          this.$router.push('/user'); // 登录成功跳转
+          this.$router.push('/dish'); // 登录成功跳转
         } else {
           this.$message.error('登录失败：' + res.data.message);
         }

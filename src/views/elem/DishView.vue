@@ -219,7 +219,7 @@ export default {
         return;
       }
       axios
-        .get(`http://localhost:8082/api/dishes/search?keyword=${this.formInline.keyword}`)
+        .get(`/api/dishes/search?keyword=${this.formInline.keyword}`)
         .then((response) => {
           this.tableData = response.data.data;
           console.log("Search results:", response.data);
@@ -341,9 +341,9 @@ export default {
         });
     },
     getAll(){
-      console.log("axios.get(`http://localhost:8082/api/dishes/all`)");
+      console.log("axios.get(`/api/dishes/all`)");
       axios
-        .get(`http://localhost:8082/api/dishes/all`)
+        .get(`/api/dishes/all`)
         .then((response) => {
           this.tableData = response.data.data;
           console.log("response:\n",response);
