@@ -61,7 +61,7 @@ export default {
       .then(res => {
         console.log('登录响应:', res.data);
         if (res.data.code === 200) {
-          const token = res.data.data;
+          const token = res.data.data.token;
           localStorage.setItem('jwt_token', token); // 保存 token
           this.$router.push('/dish'); // 登录成功跳转
         } else {

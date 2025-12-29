@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container class="layout-container">
     <!--<el-header>Header</el-header>-->
     <!-- <el-header style="font-size: 40px; background-color: rgb(238, 241, 246)"> -->
     <el-header class="header">
@@ -46,39 +46,39 @@
           </el-form-item>
         </el-form>
         <!--中间的table-->
-        <el-table :data="tableData" style="height: 100%">
-          
-          <el-table-column label="菜品名称" >
+        <el-table :data="tableData" style="width: 100%">
+
+          <el-table-column label="菜品名称">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.dishname }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="菜品描述" >
+          <el-table-column label="菜品描述">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.description }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="菜品分类" >
+          <el-table-column label="菜品分类">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.category }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="价格" >
+          <el-table-column label="价格">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.price }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="辣度" >
+          <el-table-column label="辣度">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.isspicy }}</span>
+              <span style="margin-left: 10px">{{ scope.row.isSpicy ? '辣' : '不辣' }}</span>
             </template>
-          </el-table-column> 
+          </el-table-column>
 
-          <el-table-column label="库存" >
+          <el-table-column label="库存">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.stock }}</span>
             </template>
@@ -115,7 +115,7 @@
               <el-input v-model="form.category" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品辣度" :label-width="formLabelWidth">
-              <el-checkbox v-model="form.isspicy" autocomplete="off">辣</el-checkbox>
+              <el-checkbox v-model="form.isSpicy" autocomplete="off">辣</el-checkbox>
             </el-form-item>
 
           </el-form>
@@ -143,7 +143,7 @@
               <el-input v-model="formUpdate.category" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品辣度" :label-width="formLabelWidth">
-              <el-checkbox v-model="formUpdate.isspicy" autocomplete="off">辣</el-checkbox>
+              <el-checkbox v-model="formUpdate.isSpicy" autocomplete="off">辣</el-checkbox>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -159,6 +159,8 @@
 <script>
 import axios from 'axios';
 //import { is } from 'core-js/core/object';
+import request from "@/utils/request";
+
 export default {
   data() {
     return {
@@ -175,7 +177,7 @@ export default {
         price: 0.0,
         stock: 0,
         category: '',
-        isspicy: false
+        isSpicy: false
       },
       formUpdate: {
         id: '',
@@ -184,7 +186,7 @@ export default {
         price: 0.0,
         stock: 0,
         category: '',
-        isspicy: false
+        isSpicy: false
       },
       formInline: {
         keyword: ''
@@ -196,7 +198,7 @@ export default {
         price: 3.0,
         stock: 3,
         category: 'test',
-        isspicy: false
+        isSpicy: false
       }]
     }
   },
@@ -218,7 +220,8 @@ export default {
         this.handlePageChange(1);
         return;
       }
-      axios
+      //axios
+      request
         .get(`/api/dishes/search?keyword=${this.formInline.keyword}`)
         .then((response) => {
           this.tableData = response.data.data;
@@ -248,7 +251,7 @@ export default {
         price: row.price,
         stock: row.stock,
         category: row.category,
-        isspicy: false
+        isSpicy: false
       };
     },
     handleDelete(index, row) {
@@ -261,7 +264,8 @@ export default {
       })
         .then(() => {
           // 调用删除接口（GET 请求）
-          axios
+          //axios
+          request
             .delete(`/deletequestion?id=${id}`) // 使用 GET 请求传递 id 参数
             .then((response) => {
               console.log(response.data);
@@ -270,10 +274,13 @@ export default {
             })
             .catch((error) => {
               console.error("Error deleting dish:", error);
-              this.$message({
-                type: "error",
-                message: error.response.data.message || "删除失败，请稍后重试!",
-              });
+
+              let msg = "菜品删除失败，请稍后重试!";
+              if (error.response && error.response.data) {
+                msg = error.response.data.message || msg;
+              }
+
+              this.$message.error(msg);
             });
         })
         .catch(() => {
@@ -285,7 +292,8 @@ export default {
     },
     handlePageChange(page) {
       this.currentPage = page;
-      axios
+      //axios
+      request
         .get(`/questions?page=${this.currentPage}&pageSize=${this.pageSize}`)
         .then((response) => {
           this.tableData = response.data.data.qsBeanList;
@@ -298,8 +306,9 @@ export default {
     onSubmitNewDish() {
 
       console.log("Submitting dish:", this.form);
-      axios
-        .post("/addquestion", this.form)
+      //axios
+      request
+        .post("/api/dishes", this.form)
         .then((response) => {
           this.$message({
             type: "success",
@@ -307,21 +316,27 @@ export default {
           });
           console.log("Dish added successfully:", response.data);
           this.dialogFormVisible = false;
-          this.handlePageChange(this.currentPage);
+          //          this.handlePageChange(this.currentPage);
+          this.getAll();
         })
         .catch((error) => {
           console.error("Error adding dish:", error);
-          this.$message({
-            type: "error",
-            message: error.response.data.message || "菜品添加失败，请稍后重试!",
-          });
+
+          let msg = "菜品添加失败，请稍后重试!";
+          if (error.response && error.response.data) {
+            msg = error.response.data.message || msg;
+          }
+
+          this.$message.error(msg);
         });
 
     },
     onUpdateDish() {
       console.log("Updating dish:", this.formUpdate);
-      axios
-        .post("/updatequestion", this.formUpdate)
+      const { id, ...toupdate } = this.formUpdate;
+      //axios
+      request
+        .put(`/api/dishes/${id}`, toupdate)
         .then((response) => {
           console.log("Dish updated successfully:", response.data);
           this.$message({
@@ -330,23 +345,28 @@ export default {
           });
           this.dialogFormVisible = false;
           this.isEdit = false;
-          this.handlePageChange(this.currentPage);
+          //          this.handlePageChange(this.currentPage);
+          this.getAll();
         })
         .catch((error) => {
-          this.$message({
-            type: "error",
-            message: error.response.data.message || "菜品更新失败，请稍后重试!",
-          });
           console.error("Error updating dish:", error);
+
+          let msg = "菜品更新失败，请稍后重试!";
+          if (error.response && error.response.data) {
+            msg = error.response.data.message || msg;
+          }
+
+          this.$message.error(msg);
         });
     },
-    getAll(){
-      console.log("axios.get(`/api/dishes/all`)");
-      axios
+    getAll() {
+      console.log("request.get(`/api/dishes/all`)");
+      //axios
+      request
         .get(`/api/dishes/all`)
         .then((response) => {
           this.tableData = response.data.data;
-          console.log("response:\n",response);
+          console.log("response:\n", response);
           //this.total = response.data.data.total;
         })
         .catch((error) => {
@@ -365,29 +385,42 @@ export default {
 </script>
 
 <style>
-  :root {
-    --primary: #ff7e5f;
-    --primary-dark: #eb5e41;
-    --primary-light: #ffb199;
-    --secondary: #0ba360;
-    --text-dark: #333333;
-    --text-light: #f8f9fa;
-    --background: rgb(238,241,246);
-    --background-light: #f8f9fa;
-    --card-bg: #ffffff;
-    --border-radius: 8px;
-    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-    --title: rgb(238, 241, 246);
+:root {
+  --primary: #ff7e5f;
+  --primary-dark: #eb5e41;
+  --primary-light: #ffb199;
+  --secondary: #0ba360;
+  --text-dark: #333333;
+  --text-light: #f8f9fa;
+  --background: rgb(238, 241, 246);
+  --background-light: #f8f9fa;
+  --card-bg: #ffffff;
+  --border-radius: 8px;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+  --title: rgb(238, 241, 246);
 }
-  .header{
-    font-size: 40px;
-    background-color: var(--background);
-    color: var(--text-dark);
-    text-align: left;
-  }
-  .sidemenu{
-    background-color: var(--background)
-  }
 
+.header {
+  font-size: 40px;
+  background-color: var(--background);
+  color: var(--text-dark);
+  text-align: left;
+}
+
+.sidemenu {
+  background-color: var(--background)
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+.layout-container {
+  height: 100vh;
+  /* 撑满整个视口 */
+}
 </style>
