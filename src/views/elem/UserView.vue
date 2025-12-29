@@ -2,7 +2,7 @@
   <el-container>
     <!--<el-header>Header</el-header>-->
     <el-header style="font-size: 40px; background-color: rgb(238, 241, 246)">
-      Quiz后台管理
+      XX餐厅后台管理
       <el-button style="float: right; margin-top: 10px;" type="danger" @click="logout">退出登录</el-button>
     </el-header>
     <el-container>
@@ -20,6 +20,9 @@
               </el-menu-item>
               <el-menu-item index="1-2">
                 <router-link to="/question">题目管理</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-3">
+                <router-link to="/question">订单管理</router-link>
               </el-menu-item>
             </el-menu-item-group>
 

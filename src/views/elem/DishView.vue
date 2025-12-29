@@ -1,13 +1,14 @@
 <template>
   <el-container>
     <!--<el-header>Header</el-header>-->
-    <el-header style="font-size: 40px; background-color: rgb(238, 241, 246)">
-      XX餐厅后台管理
+    <!-- <el-header style="font-size: 40px; background-color: rgb(238, 241, 246)"> -->
+    <el-header class="header">
+      餐厅后台管理
       <el-button style="float: right; margin-top: 10px;" type="danger" @click="logout">退出登录</el-button>
     </el-header>
     <el-container>
       <!--<el-aside width="200px">Aside</el-aside>-->
-      <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+      <el-aside width="200px" class="sidemenu">
         <el-menu :default-openeds="['1']">
           <el-submenu index="1">
             <template slot="title">
@@ -45,43 +46,39 @@
           </el-form-item>
         </el-form>
         <!--中间的table-->
-        <el-table :data="tableData" style="width: 80%">
-          <!-- <el-table-column label="序号" width="50">
-            <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.id }}</span>
-            </template>
-          </el-table-column> -->
-          <el-table-column label="菜品名称" width="275">
+        <el-table :data="tableData" style="height: 100%">
+          
+          <el-table-column label="菜品名称" >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.dishname }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="菜品描述" width="350">
+          <el-table-column label="菜品描述" >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.description }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="菜品分类" width="350">
+          <el-table-column label="菜品分类" >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.category }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="价格" width="125">
+          <el-table-column label="价格" >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.price }}</span>
             </template>
           </el-table-column>
 
-          <!-- <el-table-column label="辣度" width="125">
+          <el-table-column label="辣度" >
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.isSpicy }}</span>
+              <span style="margin-left: 10px">{{ scope.row.isspicy }}</span>
             </template>
-          </el-table-column> -->
+          </el-table-column> 
 
-          <el-table-column label="库存" width="125">
+          <el-table-column label="库存" >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.stock }}</span>
             </template>
@@ -99,46 +96,59 @@
         <el-pagination background layout="prev, pager, next" :page-size="pageSize" :total="total"
           :current_page="currentPage" @current-change="handlePageChange">
         </el-pagination>
-        <!--弹出添加用户对话框-->
+        <!--弹出添加菜品对话框-->
         <el-dialog title="添加新菜品" :visible.sync="dialogFormVisible">
           <el-form :model="form">
             <el-form-item label="菜品名称" :label-width="formLabelWidth">
-              <el-input v-model="form.question" autocomplete="off"></el-input>
+              <el-input v-model="form.dishname" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品描述" :label-width="formLabelWidth">
-              <el-input v-model="form.optiona" autocomplete="off"></el-input>
+              <el-input v-model="form.description" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品价格" :label-width="formLabelWidth">
-              <el-input v-model="form.optionb" autocomplete="off"></el-input>
+              <el-input v-model="form.price" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="库存数量" :label-width="formLabelWidth">
-              <el-input v-model="form.optionc" autocomplete="off"></el-input>
+              <el-input v-model="form.stock" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="菜品分类" :label-width="formLabelWidth">
+              <el-input v-model="form.category" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="菜品辣度" :label-width="formLabelWidth">
+              <el-checkbox v-model="form.isspicy" autocomplete="off">辣</el-checkbox>
+            </el-form-item>
+
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="onSubmitNewQuestion">确 定</el-button>
+            <el-button type="primary" @click="onSubmitNewDish">确 定</el-button>
           </div>
         </el-dialog>
         <!--弹出修改题目对话框-->
-        <el-dialog title="编辑题目" :visible.sync="isEdit">
-          <el-form :model="form">
+        <el-dialog title="编辑菜品" :visible.sync="isEdit">
+          <el-form :model="formUpdate">
             <el-form-item label="菜品名称" :label-width="formLabelWidth">
-              <el-input v-model="form.question" autocomplete="off"></el-input>
+              <el-input v-model="formUpdate.dishname" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品描述" :label-width="formLabelWidth">
-              <el-input v-model="form.optiona" autocomplete="off"></el-input>
+              <el-input v-model="formUpdate.description" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品价格" :label-width="formLabelWidth">
-              <el-input v-model="form.optionb" autocomplete="off"></el-input>
+              <el-input v-model="formUpdate.price" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="库存数量" :label-width="formLabelWidth">
-              <el-input v-model="form.optionc" autocomplete="off"></el-input>
+              <el-input v-model="formUpdate.stock" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="菜品分类" :label-width="formLabelWidth">
+              <el-input v-model="formUpdate.category" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="菜品辣度" :label-width="formLabelWidth">
+              <el-checkbox v-model="formUpdate.isspicy" autocomplete="off">辣</el-checkbox>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="isEdit = false">取 消</el-button>
-            <el-button type="primary" @click="onUpdateQuestion">确 定</el-button>
+            <el-button type="primary" @click="onUpdateDish">确 定</el-button>
           </div>
         </el-dialog>
       </el-main>
@@ -160,41 +170,33 @@ export default {
       total: 0,    // 总条数
 
       form: {
-        question: '',
-        optiona: '',
-        optionb: '',
-        optionc: '',
-        optiond: '',
-        answer: ''
+        dishname: '',
+        description: '',
+        price: 0.0,
+        stock: 0,
+        category: '',
+        isspicy: false
       },
       formUpdate: {
         id: '',
-        question: '',
-        optiona: '',
-        optionb: '',
-        optionc: '',
-        optiond: '',
-        answer: ''
+        dishname: '',
+        description: '',
+        price: 0.0,
+        stock: 0,
+        category: '',
+        isspicy: false
       },
       formInline: {
         keyword: ''
       },
       tableData: [{
-        id: "1",
-        question: "法国首都是哪个城市？",
-        options: "巴黎;伦敦;纽约;东京",
-        answer: "巴黎"
-
-      }, {
-        id: "2",
-        question: "法国首都是哪里？",
-        options: "巴黎;伦敦;纽约;东京",
-        answer: "巴黎"
-      }, {
         id: "3",
-        question: "法国首都是哪里？",
-        options: "巴黎;伦敦;纽约;东京",
-        answer: "巴黎"
+        dishname: 'test3',
+        description: 'desc3',
+        price: 3.0,
+        stock: 3,
+        category: 'test',
+        isspicy: false
       }]
     }
   },
@@ -217,7 +219,7 @@ export default {
         return;
       }
       axios
-        .get(`/findquestion?keyword=${this.formInline.keyword}`)
+        .get(`http://localhost:8082/api/dishes/search?keyword=${this.formInline.keyword}`)
         .then((response) => {
           this.tableData = response.data.data;
           console.log("Search results:", response.data);
@@ -241,18 +243,18 @@ export default {
       this.isEdit = true;
       this.formUpdate = {
         id: row.id,
-        question: row.questionText,
-        optiona: row.options[0],
-        optionb: row.options[1],
-        optionc: row.options[2],
-        optiond: row.options[3],
-        answer: row.answer
+        dishname: row.dishname,
+        description: row.description,
+        price: row.price,
+        stock: row.stock,
+        category: row.category,
+        isspicy: false
       };
     },
     handleDelete(index, row) {
       console.log(index, row);
       const id = row.id; // 获取当前条目的 id
-      this.$confirm("此操作将永久删除该题目, 是否继续?", "提示", {
+      this.$confirm("此操作将删除该菜品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -267,10 +269,10 @@ export default {
               this.handlePageChange(this.currentPage);
             })
             .catch((error) => {
-              console.error("Error deleting question:", error);
+              console.error("Error deleting dish:", error);
               this.$message({
                 type: "error",
-                message: error.response.data.message || "删除题目失败，请稍后重试!",
+                message: error.response.data.message || "删除失败，请稍后重试!",
               });
             });
         })
@@ -290,41 +292,41 @@ export default {
           this.total = response.data.data.total;
         })
         .catch((error) => {
-          console.error("Error fetching questions:", error);
+          console.error("Error fetching dishes:", error);
         });
     },
-    onSubmitNewQuestion() {
+    onSubmitNewDish() {
 
-      console.log("Submitting question:", this.form);
+      console.log("Submitting dish:", this.form);
       axios
         .post("/addquestion", this.form)
         .then((response) => {
           this.$message({
             type: "success",
-            message: "题目添加成功!",
+            message: "菜品添加成功!",
           });
-          console.log("Question added successfully:", response.data);
+          console.log("Dish added successfully:", response.data);
           this.dialogFormVisible = false;
           this.handlePageChange(this.currentPage);
         })
         .catch((error) => {
-          console.error("Error adding question:", error);
+          console.error("Error adding dish:", error);
           this.$message({
             type: "error",
-            message: error.response.data.message || "题目添加失败，请稍后重试!",
+            message: error.response.data.message || "菜品添加失败，请稍后重试!",
           });
         });
 
     },
-    onUpdateQuestion() {
-      console.log("Updating question:", this.formUpdate);
+    onUpdateDish() {
+      console.log("Updating dish:", this.formUpdate);
       axios
         .post("/updatequestion", this.formUpdate)
         .then((response) => {
-          console.log("Question updated successfully:", response.data);
+          console.log("Dish updated successfully:", response.data);
           this.$message({
             type: "success",
-            message: "题目更新成功!",
+            message: "菜品更新成功!",
           });
           this.dialogFormVisible = false;
           this.isEdit = false;
@@ -333,39 +335,59 @@ export default {
         .catch((error) => {
           this.$message({
             type: "error",
-            message: error.response.data.message || "题目更新失败，请稍后重试!",
+            message: error.response.data.message || "菜品更新失败，请稍后重试!",
           });
-          console.error("Error updating question:", error);
+          console.error("Error updating dish:", error);
         });
     },
+    getAll(){
+      console.log("axios.get(`http://localhost:8082/api/dishes/all`)");
+      axios
+        .get(`http://localhost:8082/api/dishes/all`)
+        .then((response) => {
+          this.tableData = response.data.data;
+          console.log("response:\n",response);
+          //this.total = response.data.data.total;
+        })
+        .catch((error) => {
+          console.error("Error fetching dishes:", error);
+        });
+    }
   },
 
 
   mounted() {
-    this.handlePageChange(1);
+    //this.handlePageChange(1);
+    console.log("mounted");
+    this.getAll();
   }
 }
 </script>
 
 <style>
-/*.el-header, .el-footer {
-    background-color: #B3C0D1;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
+  :root {
+    --primary: #ff7e5f;
+    --primary-dark: #eb5e41;
+    --primary-light: #ffb199;
+    --secondary: #0ba360;
+    --text-dark: #333333;
+    --text-light: #f8f9fa;
+    --background: rgb(238,241,246);
+    --background-light: #f8f9fa;
+    --card-bg: #ffffff;
+    --border-radius: 8px;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --title: rgb(238, 241, 246);
+}
+  .header{
+    font-size: 40px;
+    background-color: var(--background);
+    color: var(--text-dark);
+    text-align: left;
   }
-  
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
+  .sidemenu{
+    background-color: var(--background)
   }
-  
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
-  }*/
+
 </style>
