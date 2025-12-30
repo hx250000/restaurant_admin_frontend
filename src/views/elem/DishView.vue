@@ -7,7 +7,6 @@
       <el-button style="float: right; margin-top: 10px;" type="danger" @click="logout">退出登录</el-button>
     </el-header>
     <el-container>
-      <!--<el-aside width="200px">Aside</el-aside>-->
       <el-aside width="200px" class="sidemenu">
         <el-menu :default-openeds="['1']">
           <el-submenu index="1">
@@ -20,7 +19,7 @@
                 <router-link to="/user">用户管理</router-link>
               </el-menu-item>
               <el-menu-item index="1-2">
-                <router-link to="/question">菜品管理</router-link>
+                <router-link to="/dish">菜品管理</router-link>
               </el-menu-item>
               <el-menu-item index="1-3">
                 <router-link to="/question">订单管理</router-link>
@@ -74,7 +73,7 @@
 
           <el-table-column label="辣度">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.isSpicy ? '辣' : '不辣' }}</span>
+              <span style="margin-left: 10px">{{ scope.row.spicy ? '辣' : '不辣' }}</span>
             </template>
           </el-table-column>
 
@@ -97,7 +96,7 @@
           :current_page="currentPage" @current-change="handlePageChange">
         </el-pagination>
         <!--弹出添加菜品对话框-->
-        <el-dialog title="添加新菜品" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加新菜品" :visible.sync="dialogFormVisible" width="500px">
           <el-form :model="form">
             <el-form-item label="菜品名称" :label-width="formLabelWidth">
               <el-input v-model="form.dishname" autocomplete="off"></el-input>
@@ -115,7 +114,7 @@
               <el-input v-model="form.category" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品辣度" :label-width="formLabelWidth">
-              <el-checkbox v-model="form.isSpicy" autocomplete="off">辣</el-checkbox>
+              <el-checkbox v-model="form.spicy" autocomplete="off">辣</el-checkbox>
             </el-form-item>
 
           </el-form>
@@ -125,7 +124,7 @@
           </div>
         </el-dialog>
         <!--弹出修改题目对话框-->
-        <el-dialog title="编辑菜品" :visible.sync="isEdit">
+        <el-dialog title="编辑菜品" :visible.sync="isEdit" width="500px">
           <el-form :model="formUpdate">
             <el-form-item label="菜品名称" :label-width="formLabelWidth">
               <el-input v-model="formUpdate.dishname" autocomplete="off"></el-input>
@@ -143,7 +142,7 @@
               <el-input v-model="formUpdate.category" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="菜品辣度" :label-width="formLabelWidth">
-              <el-checkbox v-model="formUpdate.isSpicy" autocomplete="off">辣</el-checkbox>
+              <el-checkbox v-model="formUpdate.spicy" autocomplete="off">辣</el-checkbox>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -157,7 +156,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 //import { is } from 'core-js/core/object';
 import request from "@/utils/request";
 
@@ -167,6 +166,7 @@ export default {
       dialogFormVisible: false,
       dialogResetVisible: false,
       isEdit: false,
+      formLabelWidth:"100px",
       currentPage: 1,
       pageSize: 5, // 每页显示的条数
       total: 0,    // 总条数
@@ -177,7 +177,7 @@ export default {
         price: 0.0,
         stock: 0,
         category: '',
-        isSpicy: false
+        spicy: false
       },
       formUpdate: {
         id: '',
@@ -186,7 +186,7 @@ export default {
         price: 0.0,
         stock: 0,
         category: '',
-        isSpicy: false
+        spicy: false
       },
       formInline: {
         keyword: ''
@@ -198,7 +198,7 @@ export default {
         price: 3.0,
         stock: 3,
         category: 'test',
-        isSpicy: false
+        spicy: false
       }]
     }
   },
@@ -251,7 +251,7 @@ export default {
         price: row.price,
         stock: row.stock,
         category: row.category,
-        isSpicy: false
+        spicy: false
       };
     },
     handleDelete(index, row) {

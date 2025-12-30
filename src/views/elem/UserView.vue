@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container class="layout-container">
     <!--<el-header>Header</el-header>-->
     <el-header style="font-size: 40px; background-color: rgb(238, 241, 246)">
       XX餐厅后台管理
@@ -7,7 +7,7 @@
     </el-header>
     <el-container>
       <!--<el-aside width="200px">Aside</el-aside>-->
-      <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+      <el-aside width="200px" class="sidemenu">
         <el-menu :default-openeds="['1']">
           <el-submenu index="1">
             <template slot="title">
@@ -306,26 +306,44 @@ export default {
 </script>
 
 <style>
-/*.el-header, .el-footer {
-    background-color: #B3C0D1;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-  }
-  
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-  }
-  
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
-  }*/
+:root {
+  --primary: #ff7e5f;
+  --primary-dark: #eb5e41;
+  --primary-light: #ffb199;
+  --secondary: #0ba360;
+  --text-dark: #333333;
+  --text-light: #f8f9fa;
+  --background: rgb(238, 241, 246);
+  --background-light: #f8f9fa;
+  --card-bg: #ffffff;
+  --border-radius: 8px;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+  --title: rgb(238, 241, 246);
+}
+
+.header {
+  font-size: 40px;
+  background-color: var(--background);
+  color: var(--text-dark);
+  text-align: left;
+}
+
+.sidemenu {
+  background-color: var(--background)
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+.layout-container {
+  height: 100vh;
+  /* 撑满整个视口 */
+}
 .el-menu-item a {
   color: inherit;
   text-decoration: none;
