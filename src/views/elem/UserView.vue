@@ -46,7 +46,7 @@
         </el-form>
 
         <!--中间的table-->
-        <el-table :data="tableData" style="width: 80%">
+        <el-table :data="tableData" style="width: 100%">
           <el-table-column label="序号" width="80">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.id }}</span>
@@ -82,7 +82,7 @@
           :current-page="currentPage" @current-change="handlePageChange">
         </el-pagination>
         <!--弹出添加用户对话框-->
-        <el-dialog title="添加新用户" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加新用户" :visible.sync="dialogFormVisible" width="500px">
           <el-form :model="form">
             <el-form-item label="用户名" :label-width="formLabelWidth">
               <el-input v-model="form.userName" autocomplete="off"></el-input>
@@ -132,9 +132,11 @@ export default {
     return {
       dialogFormVisible: false,
       dialogResetVisible: false,
+      formLabelWidth:"100px",
       pageSize: 5, // 每页显示的条数
       total: 0,    // 总条数
       currentPage: 1,  //首页
+      allData: [],
       form: {
         userName: '',
         userPassword: '',

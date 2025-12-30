@@ -166,10 +166,12 @@ export default {
       dialogFormVisible: false,
       dialogResetVisible: false,
       isEdit: false,
-      formLabelWidth:"100px",
+      formLabelWidth: "100px",
       currentPage: 1,
-      pageSize: 5, // 每页显示的条数
+      pageSize: 6, // 每页显示的条数
       total: 0,    // 总条数
+      allData: [],
+      tableData: [],
 
       form: {
         dishname: '',
@@ -190,16 +192,7 @@ export default {
       },
       formInline: {
         keyword: ''
-      },
-      tableData: [{
-        id: "3",
-        dishname: 'test3',
-        description: 'desc3',
-        price: 3.0,
-        stock: 3,
-        category: 'test',
-        spicy: false
-      }]
+      }
     }
   },
   methods: {
@@ -217,14 +210,20 @@ export default {
       // 例如，调用API获取数据
       if (!keyword) {
         // 如果关键字为空，加载第一页数据
-        this.handlePageChange(1);
+        this.getAll();
         return;
       }
       //axios
       request
         .get(`/api/dishes/search?keyword=${this.formInline.keyword}`)
         .then((response) => {
-          this.tableData = response.data.data;
+          //this.tableData = response.data.data;
+          this.allData = response.data.data;
+          this.total = this.allData.length;
+
+          // 加载第一页
+          this.currentPage = 1;
+          this.updateTableData();
           console.log("Search results:", response.data);
           // this.total = response.data.data.total;
         })
@@ -292,16 +291,8 @@ export default {
     },
     handlePageChange(page) {
       this.currentPage = page;
-      //axios
-      request
-        .get(`/questions?page=${this.currentPage}&pageSize=${this.pageSize}`)
-        .then((response) => {
-          this.tableData = response.data.data.qsBeanList;
-          this.total = response.data.data.total;
-        })
-        .catch((error) => {
-          console.error("Error fetching dishes:", error);
-        });
+      this.updateTableData();
+
     },
     onSubmitNewDish() {
 
@@ -316,8 +307,8 @@ export default {
           });
           console.log("Dish added successfully:", response.data);
           this.dialogFormVisible = false;
-          //          this.handlePageChange(this.currentPage);
-          this.getAll();
+          this.handlePageChange(this.currentPage);
+          //this.getAll();
         })
         .catch((error) => {
           console.error("Error adding dish:", error);
@@ -345,8 +336,8 @@ export default {
           });
           this.dialogFormVisible = false;
           this.isEdit = false;
-          //          this.handlePageChange(this.currentPage);
-          this.getAll();
+          this.handlePageChange(this.currentPage);
+          //this.getAll();
         })
         .catch((error) => {
           console.error("Error updating dish:", error);
@@ -365,21 +356,33 @@ export default {
       request
         .get(`/api/dishes/all`)
         .then((response) => {
-          this.tableData = response.data.data;
+          // this.tableData = response.data.data;
           console.log("response:\n", response);
-          //this.total = response.data.data.total;
+          this.allData = response.data.data;
+          this.total = this.allData.length;
+
+          // 加载第一页
+          this.currentPage = 1;
+          this.updateTableData();
         })
         .catch((error) => {
           console.error("Error fetching dishes:", error);
         });
+    },
+    updateTableData() {
+      const start = (this.currentPage - 1) * this.pageSize;
+      const end = start + this.pageSize;
+      this.tableData = this.allData.slice(start, end);
     }
+
   },
 
 
   mounted() {
-    //this.handlePageChange(1);
-    console.log("mounted");
     this.getAll();
+    this.handlePageChange(1);
+    console.log("mounted");
+    //this.getAll();
   }
 }
 </script>
@@ -392,7 +395,7 @@ export default {
   --secondary: #0ba360;
   --text-dark: #333333;
   --text-light: #f8f9fa;
-  --background: rgb(238, 241, 246);
+  --background: rgb(229, 237, 251);
   --background-light: #f8f9fa;
   --card-bg: #ffffff;
   --border-radius: 8px;
