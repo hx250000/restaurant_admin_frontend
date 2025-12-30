@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header style="font-size: 40px; background-color: rgb(238, 241, 246);display: flex; justify-content: center; align-items: center;">
+    <el-header style="font-size: 40px; background-color: rgb(229, 237, 251);display: flex; justify-content: center; align-items: center;">
       餐厅后台管理系统登录
     </el-header>
     <el-main>
@@ -81,5 +81,6 @@ export default {
 .login-form {
     max-width: 400px;
     margin: 50px auto;
+    align-self: center;
 }
 </style>

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { component } from 'vue/types/umd'
 //import HomeView from '../views/HomeView.vue'
 
 Vue.use(VueRouter)
@@ -20,6 +21,12 @@ const routes = [
     name:'dish',
     component:()=>import('../views/elem/DishView.vue'),
     meta:{requireAuth:true}
+  },
+  {
+    path:'/order',
+    name:'order',
+    component:()=>import('../views/elem/OrderView.vue'),
+//    meta:{requireAuth:true}
   },
   {
     path:'/login',

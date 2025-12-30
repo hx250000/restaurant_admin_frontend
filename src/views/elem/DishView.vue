@@ -22,7 +22,7 @@
                 <router-link to="/dish">菜品管理</router-link>
               </el-menu-item>
               <el-menu-item index="1-3">
-                <router-link to="/question">订单管理</router-link>
+                <router-link to="/order">订单管理</router-link>
               </el-menu-item>
             </el-menu-item-group>
 
@@ -40,8 +40,7 @@
 
           <el-form-item>
             <el-button type="primary" @click="onSearch">查询</el-button>
-            <el-button type="success" @click="onAddNewQuestion">添加菜品</el-button>
-
+            <el-button type="success" @click="onAddNewDish">添加菜品</el-button>
           </el-form-item>
         </el-form>
         <!--中间的table-->
@@ -83,9 +82,10 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="260px">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" type="warning" @click="handleAddStock(scope.row)">增加库存</el-button>
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -196,7 +196,43 @@ export default {
     }
   },
   methods: {
-    onAddNewQuestion() {
+    handleAddStock(row) {
+      this.$prompt('请输入增加的库存数量', '增加库存', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^[0-9]+$/,
+        inputErrorMessage: '请输入正整数'
+      }).then(({ value }) => {
+        const addStock = parseInt(value);
+        request
+          .put(`/api/dishes/${row.id}/stock/add`, null, { params: { addStock } })
+          .then((response) => {
+            console.log(response);
+            this.$message({
+              type: 'success',
+              message: '库存增加成功!'
+            });
+            // 更新本地表格显示
+            this.getAll();
+            this.handlePageChange(this.currentPage);
+          })
+          .catch((error) => {
+            console.error('Error adding stock:', error);
+            let msg = '库存增加失败，请稍后重试!';
+            if (error.response && error.response.data) {
+              msg = error.response.data.message || msg;
+            }
+            this.$message.error(msg);
+          });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        });
+      });
+    },
+
+    onAddNewDish() {
       this.dialogFormVisible = true;
     },
 
@@ -228,7 +264,7 @@ export default {
           // this.total = response.data.data.total;
         })
         .catch((error) => {
-          console.error("Error searching questions:", error);
+          console.error("Error searching dishes:", error);
         });
     },
     logout() {
@@ -265,10 +301,11 @@ export default {
           // 调用删除接口（GET 请求）
           //axios
           request
-            .delete(`/deletequestion?id=${id}`) // 使用 GET 请求传递 id 参数
+            .delete(`/api/dishes?id=${id}`) // 使用 GET 请求传递 id 参数
             .then((response) => {
               console.log(response.data);
               // 删除成功后刷新当前页数据
+              this.getAll();
               this.handlePageChange(this.currentPage);
             })
             .catch((error) => {
@@ -307,6 +344,7 @@ export default {
           });
           console.log("Dish added successfully:", response.data);
           this.dialogFormVisible = false;
+          this.getAll();
           this.handlePageChange(this.currentPage);
           //this.getAll();
         })
@@ -336,6 +374,7 @@ export default {
           });
           this.dialogFormVisible = false;
           this.isEdit = false;
+          this.getAll();
           this.handlePageChange(this.currentPage);
           //this.getAll();
         })
