@@ -1,6 +1,7 @@
 <template>
   <el-container>
-    <el-header style="font-size: 40px; background-color: rgb(229, 237, 251);display: flex; justify-content: center; align-items: center;">
+    <el-header
+      style="font-size: 40px; background-color: rgb(229, 237, 251);display: flex; justify-content: center; align-items: center;">
       餐厅后台管理系统登录
     </el-header>
     <el-main>
@@ -58,20 +59,32 @@ export default {
           'Content-Type': 'application/json'
         }
       })
-      .then(res => {
-        console.log('登录响应:', res.data);
-        if (res.data.code === 200) {
-          const token = res.data.data.token;
-          localStorage.setItem('jwt_token', token); // 保存 token
-          this.$router.push('/dish'); // 登录成功跳转
-        } else {
-          this.$message.error('登录失败：' + res.data.message);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        this.$message.error('登录异常', err.message);
-      });
+        .then(res => {
+          //console.log('登录响应:', res.data);
+          if (res.data.code === 200) {
+            const token = res.data.data.token;
+            localStorage.setItem('jwt_token', token); // 保存 token
+            this.$router.push('/dish'); // 登录成功跳转
+          } else {
+            this.$message.error('登录失败：' + res.data.message);
+          }
+        })
+        .catch(err => {
+          //console.error(err);
+          if (err.response) {
+            console.log('登录失败状态码:', err.response.status);
+            console.log('后端返回信息:', err.response.data);
+            if (err.response.status === 401) {
+              this.$message.error('用户名或密码错误！');
+            } else {
+              this.$message.error('登录失败：' + err.response.data.message || '未知错误');
+            }
+          } else {
+            // 网络错误或请求没到后端
+            // console.error('请求出错:', err);
+            this.$message.error('网络异常，请稍后再试');
+          }
+        });
     }
   },
 };
@@ -79,8 +92,8 @@ export default {
 
 <style>
 .login-form {
-    max-width: 400px;
-    margin: 50px auto;
-    align-self: center;
+  max-width: 400px;
+  margin: 50px auto;
+  align-self: center;
 }
 </style>

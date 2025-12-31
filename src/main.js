@@ -42,7 +42,9 @@ axios.interceptors.response.use(
       if (status === 401|| data.message === 'NOT_LOGIN') {
         // 处理未授权错误，例如跳转到登录页面
         localStorage.removeItem('jwt_token');
-        router.push('/login');
+        if (router.currentRoute.path !== '/login') {
+          router.replace('/login');
+        }
       }else {
         console.erroer('响应错误:', error.message);
       }
@@ -50,6 +52,8 @@ axios.interceptors.response.use(
     else{
       console.error('响应错误:', error.message);
     }  
+    return Promise.reject(error);
+
   }
 );
 
