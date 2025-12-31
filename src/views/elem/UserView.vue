@@ -15,14 +15,14 @@
             </template>
             <el-menu-item-group>
               <!--<template slot="title">分组一</template>-->
-              <el-menu-item index="1-1" class="">
+              <el-menu-item index="1-1" class="curpage">
                 <router-link to="/user">用户管理</router-link>
               </el-menu-item>
               <el-menu-item index="1-2">
                 <router-link to="/dish">菜品管理</router-link>
               </el-menu-item>
               <el-menu-item index="1-3">
-                <router-link to="/question">订单管理</router-link>
+                <router-link to="/order">订单管理</router-link>
               </el-menu-item>
             </el-menu-item-group>
 
