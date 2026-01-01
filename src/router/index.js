@@ -26,7 +26,7 @@ const routes = [
     path:'/order',
     name:'order',
     component:()=>import('../views/elem/OrderView.vue'),
-//    meta:{requireAuth:true}
+    meta:{requireAuth:true}
   },
   {
     path:'/login',
