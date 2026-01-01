@@ -1,5 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
+  publicPath: '/admin/',
   transpileDependencies: true,
   devServer: {
     port: 8080, // 设置为你想要的端口号
