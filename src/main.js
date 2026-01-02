@@ -7,7 +7,7 @@ import axios from 'axios';
 
 Vue.use(ElementUI);
 
-axios.defaults.baseURL = 'http://localhost:8900';
+axios.defaults.baseURL = 'http://localhost';
 
 Vue.config.productionTip = false
 
