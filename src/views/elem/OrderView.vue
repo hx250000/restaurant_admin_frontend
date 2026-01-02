@@ -58,7 +58,7 @@
                             <el-button size="mini" @click="viewDetail(scope.row)">详情</el-button>
 
                             <!-- 只有未完成订单才显示“完成订单” -->
-                            <el-button v-if="currentStatus === 'CREATED'" size="mini" type="success"
+                            <el-button v-if="scope.row.status === 'CREATED'" size="mini" type="success"
                                 @click="finishOrder(scope.row)">
                                 完成订单
                             </el-button>
@@ -75,7 +75,9 @@
                         <el-descriptions-item label="用户ID">{{ orderDetail.userId }}</el-descriptions-item>
                         <el-descriptions-item label="总金额">{{ orderDetail.totalAmount }}</el-descriptions-item>
                         <el-descriptions-item label="状态">{{ orderDetail.status }}</el-descriptions-item>
-                        <el-descriptions-item label="创建时间">{{ orderDetail.createTime }}</el-descriptions-item>
+                        <el-descriptions-item label="配送地址" :span="2">{{ orderDetail.address }}</el-descriptions-item>
+                        <el-descriptions-item label="备注" :span="2">{{ orderDetail.remark || '无' }}</el-descriptions-item>
+                        <el-descriptions-item label="创建时间" :span="2">{{ orderDetail.createTime }}</el-descriptions-item>
                     </el-descriptions>
 
                     <br />

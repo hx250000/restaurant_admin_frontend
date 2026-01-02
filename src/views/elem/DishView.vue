@@ -13,7 +13,6 @@
             <template slot="title">
               <h3>管理选项</h3>
             </template>
-            <el-menu-item-group>
               <!--<template slot="title">分组一</template>-->
               <el-menu-item index="1-1">
                 <router-link to="/user">用户管理</router-link>
@@ -24,7 +23,6 @@
               <el-menu-item index="1-3">
                 <router-link to="/order">订单管理</router-link>
               </el-menu-item>
-            </el-menu-item-group>
 
           </el-submenu>
 
